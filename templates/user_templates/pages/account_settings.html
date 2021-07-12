@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+<link href="https://fonts.googleapis.com/css?family=Lobster" rel="stylesheet">
+<div class="container-fluid">
+	<div class="container">
+		<h2 class="text-center" id="title">Account Settings</h2>
+		<p class="text-center">
+			<small id="passwordHelpInline" class="text-muted"> Here you can update your account information.</small>
+		</p>
+		<hr>
+		
+
+		<div class="row">
+			<div class="col-md-5 ">
+
+					<form method="POST" action="{% url 'account_settings' %}">
+						{% csrf_token %}
+						{{ user_profile_form|crispy }}
+					</div>
+
+					<div class="col-md-2">
+						<!-------null------>
+					</div>
+
+					<div class="col-md-5 mb-3">
+						{{ profile_from|crispy }}
+
+					</div>
+					<button class="btn btn-block btn-success">Submit</button>
+				</form>
+		</div>
+
+	</div>
+</div>
+
+</div>
+
+{% endblock content %}

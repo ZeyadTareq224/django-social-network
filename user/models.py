@@ -9,7 +9,6 @@ GENDER = [
 ]
 class User(AbstractUser):
 
-	gender = models.CharField(choices=GENDER, max_length=6)
 	
 	def __str__(self):
 		return self.username
@@ -17,6 +16,8 @@ class User(AbstractUser):
 
 class Profile(models.Model):
 	user = models.OneToOneField(User, on_delete=models.CASCADE)
+	gender = models.CharField(choices=GENDER, max_length=6)
 	location = models.CharField(max_length=100)
+	phone_number = models.CharField(max_length=16)
 	def __str__(self):
 		return f"{self.user.username}'s profile"
