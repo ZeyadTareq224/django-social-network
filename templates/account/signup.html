@@ -14,7 +14,7 @@
     <div class="social-btn text-center">
       <a href="{% provider_login_url 'facebook' method='oauth2' %}" target="blank" class="btn btn-primary btn-lg"><i class="fa fa-facebook"></i> Facebook</a>
       <a href="#" class="btn btn-info btn-lg"><i class="fa fa-twitter"></i> Twitter</a>
-      <a href="#" class="btn btn-danger btn-lg"><i class="fa fa-google"></i> Google</a>
+      <a href="{% provider_login_url 'google' method='oauth2' %}" target="blank" class="btn btn-danger btn-lg"><i class="fa fa-google"></i> Google</a>
     </div>
     <div class="or-seperator"><b>or</b></div>
     {% csrf_token %}
