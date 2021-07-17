@@ -1,0 +1,173 @@
+{% block javascript %}
+<script type="text/javascript">
+	function clearTextarea(post_id){
+
+		textareaId = 'id_comment' + post_id
+		document.getElementById(textareaId).value = ""
+		
+	}
+
+	function commentSubmit(event, post_id){
+		event.preventDefault()
+		var comment = document.getElementById('id_comment' + post_id).value
+		var commentFormId = 'commentForm'+ post_id
+		var commentFormAction = document.getElementById(commentFormId).action
+		var commentItemId = "#commentItem" + post_id
+		
+
+		$.ajax({
+			url: commentFormAction,
+			data: {
+				comment: comment,
+				csrfmiddlewaretoken: '{{ csrf_token }}',
+			},
+			type: "POST",
+			success: function(response) {
+				console.log(response)
+				
+				var updateDeleteButtons =
+										`<div id="commentDeleteFormDiv{{comment.id}}">
+										<form id="commentDeleteForm{{comment.id}}" method="POST" action="{% url 'comment_delete' %}" onsubmit="commentDelete(event, {{comment.id}})">
+											{% csrf_token %}
+											<button type="submit" style="border:none; background-color: white" class="text-danger">
+											<small class="fa fa-trash mr-3"></small>
+											</button>
+										</form>	
+									</div>
+										`
+				if (response['logedInUserId'] == response['commentAuthorId']) {
+					var htmlResult = 
+					`
+					<div class="d-flex flex-row align-items-start">
+						<img class="rounded-circle" src="${response['userProfilePic']}" width="40" height="40">
+						<div class="media-body">
+							<span class="text-muted pull-right">
+								<small class="text-muted">${response['created_at']}</small>
+									<br id="deleteUpdateComment">
+									${updateDeleteButtons}
+							</span>
+							<span class="ml-2 d-block font-weight-bold name">${response['userFirstName']} ${response['userLastName']}</span>
+							<p>
+								${response['comment']}
+							</p>
+							<hr>
+						</div>
+					</div>	
+					`
+				$(commentItemId).append(htmlResult)
+
+				}else {
+					var htmlResult = 
+					`
+					<div class="d-flex flex-row align-items-start">
+						<img class="rounded-circle" src="${response['userProfilePic']}" width="40" height="40">
+						<div class="media-body">
+							<span class="text-muted pull-right">
+								<small class="text-muted">${response['created_at']}</small>
+									<br id="deleteUpdateComment">
+							</span>
+							<span class="ml-2 d-block font-weight-bold name">${response['userFirstName']} ${response['userLastName']}</span>
+							<p>
+								${response['comment']}
+							</p>
+							<hr>
+						</div>
+					</div>	
+					`
+					$(commentItemId).append(htmlResult)
+
+				}
+            	clearTextarea(post_id)
+			},
+			error: function() {
+				console.log("error")
+			}
+		})
+	}
+
+	function commentDelete (event, comment_id){
+		event.preventDefault()
+		var commentDeleteFormId = "commentDeleteForm" + comment_id
+		var commentDeleteFormAction = document.getElementById(commentDeleteFormId).action
+
+		$.ajax({
+			url: commentDeleteFormAction,
+			type: "POST",
+			data: {
+				csrfmiddlewaretoken: '{{ csrf_token }}',
+			},
+			success: function (response){
+				console.log(response)
+				var commentDeleteDivId = 'commentDeleteFormDiv'+ comment_id
+				$(commentDeleteDivId).html('')
+			},
+			error: function(){
+				console.log('error')
+			}
+
+		})
+	}
+
+</script>
+{% endblock javascript %}
+
+
+
+
+
+<div>
+					{% for comment in comments %}
+						<div class="d-flex flex-row align-items-start">
+							<img class="rounded-circle" src="{{comment.user.profile.profile_pic.url}}" width="40" height="40">
+							<div class="media-body">
+								<span class="text-muted pull-right">
+									<small class="text-muted">{{comment.created_at}}</small>
+									<br id="deleteUpdateComment">
+									{% if request.user == comment.user %}
+
+									<div id="commentDeleteFormDiv{{comment.id}}">
+										<form id="commentDeleteForm{{comment.id}}" method="POST" action="{% url 'comment_delete' comment.id %}" onsubmit="commentDelete(event, {{comment.id}})">
+											{% csrf_token %}
+											<button type="submit" style="border:none; background-color: white" class="text-danger">
+											<small class="fa fa-trash mr-3"></small>
+											</button>
+										</form>	
+									</div>
+
+
+									<form>
+										<button type="submit" style="border:none; background-color: white" onclick="deleteComment({{comment.id}})" href="#" class="text-info">
+										<small class="fa fa-pencil mr-3"></small>
+										</button>
+									</form>
+									{% endif %}
+									
+								</span>
+
+								<span class="ml-2 d-block font-weight-bold name">{{comment.user.first_name}} {{comment.user.last_name}}</span>
+								<p>
+									{{comment.comment}}
+								</p>
+							</div>
+						</div>
+						<hr>
+					{% endfor %}
+
+				</div>
+				<div id="commentItem{{post.id}}"></div>
+
+				<div class="bg-light p-2">
+					<form action="{% url 'comment_save' post.id %}" id="commentForm{{post.id}}" onsubmit="commentSubmit(event, {{post.id}})">
+						<div class="d-flex flex-row align-items-start">
+							<img class="rounded-circle" src="{{request.user.profile.profile_pic.url}}" width="40" height="40">
+							
+							<textarea class="form-control ml-1 shadow-none textarea" name="comment" required="" id="id_comment{{post.id}}"></textarea>
+						</div>
+						<div class="mt-2 text-right">
+							<button type="submit" class="btn btn-primary btn-sm shadow-none" type="button">
+								Post comment
+							</button>
+							<button onclick="clearTextarea({{post.id}})" id="commentCancel{{post.id}}" class="btn btn-outline-primary btn-sm ml-1 shadow-none" type="button">Reset</button>
+						</div>
+					</form>
+				</div>

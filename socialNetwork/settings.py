@@ -40,11 +40,11 @@ INSTALLED_APPS = [
     'allauth.socialaccount.providers.facebook',
     'allauth.socialaccount.providers.google',
     'crispy_forms',
-
+    'comment',
 ]
 
+LOGIN_URL = 'account_login'
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
-
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -150,3 +150,12 @@ ACCOUNT_SESSION_REMEMBER = True
 ACCOUNT_FORMS = {
 'signup': 'user.forms.CustomSignupFrom',
 }
+
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT= os.path.join(BASE_DIR, 'media/')
+
+
+PROFILE_APP_NAME = 'user'
+PROFILE_MODEL_NAME = 'Profile'
+COMMENT_FLAGS_ALLOWED = 5

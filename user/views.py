@@ -5,7 +5,7 @@ from .forms import User_ProfileForm, ProfileFrom
 
 # django models imports
 from .models import Profile, User
-
+from feed.models import Post
 
 
 
@@ -36,4 +36,12 @@ def account_settings (request):
 	'user_profile_form': user_profile_form,
 	'profile_from': profile_from,
 	}		
-	return render(request, 'user_templates/pages/account_settings.html', context)	
+	return render(request, 'user_templates/pages/account_settings.html', context)
+
+
+def user_profile(request, user_id):
+	posts = Post.objects.filter(user__id=user_id).order_by('-created_at')
+	user = User.objects.get(id=user_id)
+	profile = Profile.objects.get(user=user)
+	context = {'posts': posts, 'profile': profile}
+	return render(request, 'feed_templates/profile.html', context)	

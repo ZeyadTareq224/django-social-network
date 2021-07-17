@@ -1,0 +1,130 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<link rel="stylesheet" type="text/css" href="{% static 'feed_assets/css/profile.css' %}">
+
+
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
+<div class="container">
+
+    <div class="row">
+        <div class="col-md-3 mb30 mt-2">
+            <div class="card">
+
+                <div class="card-content pt20 pb20 profile-header">
+                    <img src="{{profile.profile_pic.url}}" alt="" class="img-fluid rounded-circle">
+                    <h4 class="card-title text-center mb20">{{profile.user.first_name}} {{profile.user.last_name}}</h4>
+                    <p>
+                        {{profile.bio}}
+
+                    </p>
+                    <div class="text-center clearfix">
+                        <a href="#" class="social-icon-sm si-border si-facebook si-border-round">
+                            <i class="fa fa-facebook"></i>
+                        </a>
+                        <a href="#" class="social-icon-sm si-border si-twitter si-border-round">
+                            <i class="fa fa-twitter"></i>
+                        </a>
+                        <a href="#" class="social-icon-sm si-border si-g-plus si-border-round">
+                            <i class="fa fa-google-plus"></i>
+                        </a>
+                        <a href="#" class="social-icon-sm si-border si-skype si-border-round">
+                            <i class="fa fa-skype"></i>
+                        </a>
+                    </div>
+                    <hr>
+                    <div class="row">
+                        <div class="col-md-4 mb20">
+                            <h5>947</h5>
+                            <h6 class="text-small text-muted">Followers</h6>
+                        </div>
+                        <div class="col-md-4 mb20">
+                            <h5>583</h5>
+                            <h6 class="text-small text-muted">Tweets</h6>
+                        </div>
+                        <div class="col-md-4 mb20">
+                            <h5>48</h5>
+                            <h6 class="text-small text-muted">Posts</h6>
+                        </div>
+                    </div>
+                    <a href="#" class="btn btn-primary btn-rounded">Follow</a>
+                    <hr>
+                    <div class="skill-bar mb20 clearfix">
+
+                        <span>Gender</span>
+                        <div>
+                            {{profile.gender}}
+                        </div>
+                    </div>
+                    <!--skill bar-->
+                    <div class="skill-bar mb20 clearfix">
+
+                        <span>Lives In</span>
+                        <div>
+                            {{profile.location}}
+                        </div>
+                    </div>
+                    <!--skill bar-->
+                    <div class="skill-bar mb20 clearfix">
+
+                        <span>Phone Number</span>
+                        <div>
+                            {{profile.phone_number}}
+                        </div>
+                    </div>
+                    <!--skill bar-->
+                    
+                    <!--skill bar-->
+                </div>
+                <!--content-->
+
+            </div>
+        </div>
+        <div class="col-md-9 mb30">
+            <link rel="stylesheet" type="text/css" href="//netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css">
+            <link rel="stylesheet" type="text/css" href="{% static 'feed_assets/css/post.css' %}">
+
+{% for post in posts %}
+
+<div class="container mt-5">
+	<div class="d-flex justify-content-center row">
+		<div class="col-md-8">
+			<div class="d-flex flex-column comment-section">
+				<div class="bg-white p-2">
+					<div class="d-flex flex-row user-info"><img class="rounded-circle" src="{{post.user.profile.profile_pic.url}}" width="40" height="40">
+						<div class="d-flex flex-column justify-content-start ml-2"><span class="d-block font-weight-bold name">{{post.user.first_name}} {{post.user.last_name}}</span><span class="date text-black-50">Shared publicly - {{post.created_at}}</span></div>
+					</div>
+					{% if post.image %}
+
+					<div class="mt-2">
+						<img class="img-fluid" src="{{post.image.url}}">
+					</div>
+					{% endif %}
+					<div class="mt-2">
+						<p class="comment-text">{{post.content}}</p>
+					</div>
+				</div>
+				<div class="bg-white">
+					<div class="d-flex flex-row fs-12">
+						<div class="like p-2 cursor"><i class="fa fa-thumbs-o-up"></i><span class="ml-1">Like</span></div>
+						<div class="like p-2 cursor">
+							<a href="{% url 'post_details' post.id %}">
+								<i class="fa fa-commenting-o"></i>
+								<span class="ml-1">Comment</span>
+							</a>
+						</div>
+						<div class="like p-2 cursor"><i class="fa fa-share"></i><span class="ml-1">Share</span></div>
+					</div>
+				</div>				
+			</div>
+		</div>
+	</div>
+</div>
+
+
+{% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}
